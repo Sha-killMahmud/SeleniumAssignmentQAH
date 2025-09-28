@@ -1,6 +1,7 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
@@ -120,6 +121,58 @@ def modals(driver):
     driver.find_element(By.ID, "closeLargeModal").click()
     time.sleep(2)
 
+
+def dropdowns(driver):
+    driver.get("https://demoqa.com/select-menu")
+    driver.find_element(By.XPATH, "//div[text()='Select Option']").click()
+    driver.find_element(By.XPATH, "//div[text()='Group 1, option 1']").click()
+
+    time.sleep(2)
+
+    oldStyle = Select(driver.find_element(By.ID, "oldSelectMenu"))
+    oldStyle.select_by_visible_text("Green")
+    time.sleep(2)
+
+
+def new_tab(driver):
+    driver.get("https://demoqa.com/browser-windows")
+    driver.find_element(By.ID, "tabButton").click()
+    time.sleep(1)
+    parent = driver.current_window_handle
+    all_tabs = driver.window_handles
+
+    for tab in all_tabs:
+        if tab != parent:
+            driver.switch_to.window(tab)
+            driver.close()
+        time.sleep(1)
+
+    driver.switch_to.window(parent)
+
+def new_window(driver):
+    driver.get("https://demoqa.com/browser-windows")
+    driver.find_element(By.ID, "windowButton").click()
+    time.sleep(1)
+    parent = driver.current_window_handle
+    all_windows = driver.window_handles
+
+    for win in all_windows:
+        if win != parent:
+            driver.switch_to.window(win)
+            driver.close()
+        time.sleep(1)
+
+    driver.switch_to.window(parent)
+
+
+def date_selector(driver):
+    driver.get("https://demoqa.com/date-picker")
+    driver.find_element(By.ID, "datePickerMonthYearInput").click()
+    time.sleep(2)
+    driver.find_element(By.XPATH, "//div[text()='30']").click()
+    time.sleep(2)
+
+
 driver = setup_driver()
 
 input_fill(driver)
@@ -135,5 +188,9 @@ visible_after(driver)
 navigation(driver)
 screenshot(driver)
 modals(driver)
+dropdowns(driver)
+new_tab(driver)
+new_window(driver)
+date_selector(driver)
 
 driver.quit()
